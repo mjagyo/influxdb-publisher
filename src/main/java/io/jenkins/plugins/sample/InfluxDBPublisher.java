@@ -82,17 +82,6 @@ public class InfluxDBPublisher extends Recorder {
         return bucketName;
     }
 
-    public static double getRandomBuildDuration() {
-        // Generate a double between 0.0 (inclusive) and 7.0 (exclusive)
-        double duration = 7 * random.nextDouble();
-
-        // Shift the range to 8.0 to 15.0
-        duration += 8;
-
-        // Round to two decimal places
-        return Math.round(duration * 100.0) / 100.0;
-    }
-
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
             throws InterruptedException, IOException {
