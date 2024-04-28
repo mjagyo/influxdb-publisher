@@ -19,7 +19,6 @@ import hudson.util.FormValidation;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
@@ -28,58 +27,16 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 public class InfluxDBPublisher extends Recorder {
 
-    private static final Random random = new Random();
+    InfluxDBConfigurationGlobal globalConfig = InfluxDBConfigurationGlobal.get();
 
-    private final String name;
-    private String influxdbUri;
-    private String adminToken;
-    private String organizationId;
-    private String bucketName;
     private String numberStr = "";
+    private String configID;
 
     @DataBoundConstructor
-    public InfluxDBPublisher(String name) {
-        this.name = name;
-    }
+    public InfluxDBPublisher() {}
 
-    @DataBoundSetter
-    public void setInfluxdbUri(String influxdbUri) {
-        this.influxdbUri = influxdbUri;
-    }
-
-    @DataBoundSetter
-    public void setAdminToken(String adminToken) {
-        this.adminToken = adminToken;
-    }
-
-    @DataBoundSetter
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
-    }
-
-    @DataBoundSetter
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getInfluxdbUri() {
-        return influxdbUri;
-    }
-
-    public String getAdminToken() {
-        return adminToken;
-    }
-
-    public String getOrganizationId() {
-        return organizationId;
-    }
-
-    public String getBucketName() {
-        return bucketName;
+    public String getConfigID() {
+        return globalConfig.get().getConfigID();
     }
 
     @Override
@@ -110,8 +67,11 @@ public class InfluxDBPublisher extends Recorder {
         long buildTimeMillis = build.getStartTimeInMillis();
         String buildTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(buildTimeMillis);
 
-        InfluxDBClient influxDBClient =
-                InfluxDBClientFactory.create(influxdbUri, adminToken.toCharArray(), organizationId, bucketName);
+        InfluxDBClient influxDBClient = InfluxDBClientFactory.create(
+                globalConfig.get().getInfluxdbUri(),
+                globalConfig.get().getAdminToken().toCharArray(),
+                globalConfig.get().getOrganizationId(),
+                globalConfig.get().getBucketName());
 
         String[] jobTags = jobPath.split("/");
         listener.getLogger()
