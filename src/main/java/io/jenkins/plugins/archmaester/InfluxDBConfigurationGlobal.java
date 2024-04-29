@@ -1,4 +1,4 @@
-package io.jenkins.plugins.sample;
+package io.jenkins.plugins.influx;
 
 import hudson.Extension;
 import hudson.ExtensionList;
