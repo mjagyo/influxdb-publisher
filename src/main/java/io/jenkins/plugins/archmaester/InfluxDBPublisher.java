@@ -1,4 +1,4 @@
-package io.jenkins.plugins.influx;
+package io.jenkins.plugins.archmaester;
 
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
